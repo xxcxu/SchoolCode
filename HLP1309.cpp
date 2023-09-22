@@ -35,63 +35,41 @@ namespace FileHeader {
   };
 }
 using namespace FileHeader;
-namespace Solution_Of_CF512E {
+namespace Solution_Of_HLP1309 {
   bool _1;
-  static const int32 N = 1005;
-  int32 n;
-  bool e[N][N];
-  std::vector<std::array<int32, 2>> v1, v2;
+  static const int32 N = 4005;
+  int32 n, m, a, b, c, d;
+  int32 dp[N][N], min[N];
+  char s[N], t[N];
   bool _2;
-  void solve(std::vector<std::array<int32, 2>> &vec, int32 op) {
-    std::queue<std::array<int32, 2>> q;
-    std::memset(e, 0, sizeof e);
-    for (int32 i = 1; i <= n; ++i) {
-      int32 prev = (i == 1 ? n : i - 1);
-      e[i][prev] = e[prev][i] = true;
-    }
-    for (int32 i = 1; i <= n - 3; ++i) {
-      static int32 u, v;
-      u = read(), v = read();
-      e[u][v] = e[v][u] = true;
-      if (u != 1 && v != 1) q.push({u, v});
-    }
-    while (q.size()) {
-      auto& [u, v] = q.front();
-      q.pop();
-      if (!e[u][1] || !e[v][1]) {
-        q.push({u, v});
-        continue;
-      }
-      int32 id = -1;
-      for (int32 to = 2; to <= n; ++to) {
-        if (!e[u][to]) continue;
-        if (to == v) continue;
-        if (e[to][v]) { id = to; break; }
-      }
-      if (id == -1) {
-        q.push({u, v});
-        continue;
-      } 
-      e[u][v] = e[v][u] = 0;
-      e[1][id] = e[id][1] = true;
-      if (!op) vec.push_back({u, v});
-      else vec.push_back({1, id});
-    }
-    return void();
-  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    n = read();
+    a = read(), b = read(), c = read(), d = read();
+    fscanf(fin, "%s %s", s + 1, t + 1);
     int64 Start_Time_Without_Read = clock();
-    solve(v1, 0), solve(v2, 1);
-    std::reverse(all(v2));
-    fprintf(fout, "%lld\n", v1.size() + v2.size());
-    for (auto it : v1) fprintf(fout, "%d %d\n", it[0], it[1]);
-    for (auto it : v2) fprintf(fout, "%d %d\n", it[0], it[1]);
+    n = strlen(s + 1), m = strlen(t + 1);
+    std::memset(dp, 0x3f, sizeof dp);
+    std::memset(min, 0x3f, sizeof min);
+    dp[0][0] = 0;
+    for (int32 i = 1; i <= n; ++i) {
+      for (int32 j = 2; j <= m; ++j) min[j] = min[j] + b;
+      for (int32 j = 0; j <= m; ++j) {
+        if (s[i] == t[j] && j > 0) dp[i][j] = std::min(dp[i][j], dp[i - 1][j - 1]);
+        dp[i][j] = std::min(dp[i][j], dp[i - 1][j] + b);
+        if (j > 0) dp[i][j] = std::min(dp[i][j], dp[i - 1][j - 1] + c);
+        if (s[i - 1] == t[j] && j > 1)
+          min[j] = std::min(min[j], dp[i - 2][j - 2]);
+        if (i > 1 && j > 1 && s[i] == t[j - 1])
+          dp[i][j] = std::min(dp[i][j], min[j] + d);
+      }
+      for (int32 j = 1; j <= m; ++j)
+        dp[i][j] = std::min(dp[i][j], dp[i][j - 1] + a);
+    }
+    fprintf(fout, "%d\n", dp[n][m]);
     int64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_CF512E::main(), 0; }
+signed main() { return Solution_Of_HLP1309::main(), 0; }
