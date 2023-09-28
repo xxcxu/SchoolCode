@@ -35,43 +35,30 @@ namespace FileHeader {
   };
 }
 using namespace FileHeader;
-namespace Solution_Of_HLP1310 {
+namespace Solution_Of_CF1879B {
   bool _1;
-  static const int32 N = 1005, M = 2 * N;
-  static const int32 dx[] = {-1, -1, -2, -2, 1, 1, 2, 2};
-  static const int32 dy[] = {2, -2, 1, -1, 2, -2, 1, -1};
-  int32 n, m;
-  std::map<int32, std::map<int32, int32>> step;
-  int32 calc(int32 x) {
-    if (x % 4 == 0) return x / 2;
-    else return (x + 2) / 2;
-  }
-  void solve() {
-    int32 nn = read(), mm = read();
-    n = read() - nn, m = read() - mm;
-    if (n < 0) n = -n;
-    if (m < 0) m = -m;
-    if (n == 0 && m == 0) fprintf(fout, "%d\n", 0);
-    else if ((n == 1 && m == 0) || (n == 0 && m == 1)) fprintf(fout, "%d\n", 3);
-    else if (n == 1 && m == 1) fprintf(fout, "%d\n", 2);
-    else if (n == 2 && m == 2) fprintf(fout, "%d\n", 4);
-    else if (n <= 2 * m && m <= 2 * n) fprintf(fout, "%d\n", (m + n) / 3 + (m + n) % 3);
-    else if (n == 0 || m == 0) fprintf(fout, "%d\n", 2 * ((n + m - 2) / 4) + (n + m - 2) % 2 + 2);
-    else if (n > 2 * m) fprintf(fout, "%d\n", (n - 2 * m) / 4 * 2 + (n - 2 * m) % 4 + m);
-    else if (m > 2 * n) fprintf(fout, "%d\n", (m - 2 * n) / 4 * 2 + (m - 2 * n) % 4 + n);
-    return void();
-  }
+  static const int32 N = 300005;
+  int32 n;
+  int32 a[N], b[N];
   bool _2;
+  void solve() {
+    n = read();
+    int64 sumA = 0, sumB = 0;
+    for (int32 i = 1; i <= n; ++i) a[i] = read(), sumA += a[i];
+    for (int32 i = 1; i <= n; ++i) b[i] = read(), sumB += b[i];
+    int32 min1 = *std::min_element(a + 1, a + n + 1);
+    int32 min2 = *std::min_element(b + 1, b + n + 1);
+    fprintf(fout, "%lld\n", std::min(sumA + 1ll * min2 * n, sumB + 1ll * min1 * n));
+  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    // int32 t = read();
+    int32 t = read();
     int64 Start_Time_Without_Read = clock();
-    // while (t--) solve();
-    solve();
+    while (t--) solve();
     int64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_HLP1310::main(), 0; }
+signed main() { return Solution_Of_CF1879B::main(), 0; }

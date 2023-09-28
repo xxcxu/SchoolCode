@@ -35,43 +35,64 @@ namespace FileHeader {
   };
 }
 using namespace FileHeader;
-namespace Solution_Of_HLP1310 {
+namespace Solution_Of_CF612E {
   bool _1;
-  static const int32 N = 1005, M = 2 * N;
-  static const int32 dx[] = {-1, -1, -2, -2, 1, 1, 2, 2};
-  static const int32 dy[] = {2, -2, 1, -1, 2, -2, 1, -1};
-  int32 n, m;
-  std::map<int32, std::map<int32, int32>> step;
-  int32 calc(int32 x) {
-    if (x % 4 == 0) return x / 2;
-    else return (x + 2) / 2;
-  }
-  void solve() {
-    int32 nn = read(), mm = read();
-    n = read() - nn, m = read() - mm;
-    if (n < 0) n = -n;
-    if (m < 0) m = -m;
-    if (n == 0 && m == 0) fprintf(fout, "%d\n", 0);
-    else if ((n == 1 && m == 0) || (n == 0 && m == 1)) fprintf(fout, "%d\n", 3);
-    else if (n == 1 && m == 1) fprintf(fout, "%d\n", 2);
-    else if (n == 2 && m == 2) fprintf(fout, "%d\n", 4);
-    else if (n <= 2 * m && m <= 2 * n) fprintf(fout, "%d\n", (m + n) / 3 + (m + n) % 3);
-    else if (n == 0 || m == 0) fprintf(fout, "%d\n", 2 * ((n + m - 2) / 4) + (n + m - 2) % 2 + 2);
-    else if (n > 2 * m) fprintf(fout, "%d\n", (n - 2 * m) / 4 * 2 + (n - 2 * m) % 4 + m);
-    else if (m > 2 * n) fprintf(fout, "%d\n", (m - 2 * n) / 4 * 2 + (m - 2 * n) % 4 + n);
+  static const int32 N = 1000005;
+  int32 n, cir_cnt, a[N], ans[N];
+  bool vis[N];
+  std::vector<int32> siz[N], cir[N];
+  bool _2;
+  void odd(int32 x) {
+    int32 n = cir[x].size();
+    for (int32 i = 0, j = n / 2 + 1; j < n; ++i, ++j) {
+      ans[cir[x][i]] = cir[x][j];
+      ans[cir[x][j]] = cir[x][i + 1];
+    }
+    ans[cir[x][n / 2]] = cir[x][0];
     return void();
   }
-  bool _2;
+  void even(int32 x, int32 y) {
+    int32 n = cir[x].size();
+    for (int32 i = 0; i < n; ++i) {
+      ans[cir[x][i]] = cir[y][i];
+      ans[cir[y][i]] = cir[x][(i + 1) % n];
+    }
+    return void();
+  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    // int32 t = read();
+    n = read();
+    for (int32 i = 1; i <= n; ++i) a[i] = read();
     int64 Start_Time_Without_Read = clock();
-    // while (t--) solve();
-    solve();
+    for (int32 i = 1; i <= n; ++i) {
+      if (vis[i]) continue;
+      ++cir_cnt;
+      int32 u = i;
+      do { cir[cir_cnt].eb(u); vis[u] = true, u = a[u]; } while (u != i);
+      siz[(int32)cir[cir_cnt].size()].eb(cir_cnt);
+    }
+    for (int32 i = 2; i <= n; i += 2) {
+      if (siz[i].empty()) continue;
+      if ((int32)siz[i].size() % 2 == 1) {
+        fputs("-1\n", fout);
+        return void();
+      }
+    }
+    for (int32 i = 1; i <= n; i += 2)
+      for (int32 c : siz[i]) odd(c);
+    for (int32 i = 2; i <= n; i += 2) {
+      int32 lst = 0;
+      for (int32 c : siz[i]) {
+        if (lst) even(c, lst), lst = 0;
+        else lst = c;
+      }
+    }
+    for (int32 i = 1; i <= n; ++i) fprintf(fout, "%d ", ans[i]);
+    fputs("\n", fout);
     int64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_HLP1310::main(), 0; }
+signed main() { return Solution_Of_CF612E::main(), 0; }

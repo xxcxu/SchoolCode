@@ -5,6 +5,7 @@ namespace FileHeader {
   using int64 = int64_t;
   using uint32 = uint32_t;
   using uint64 = uint64_t;
+  #define int32 int64
   #define ep emplace
   #define eb emplace_back
   #define all(x) x.begin(), x.end()
@@ -39,7 +40,7 @@ namespace Solution_Of_HLP1309 {
   bool _1;
   static const int32 N = 4005;
   int32 n, m, a, b, c, d;
-  int32 dp[N][N], min[N];
+  int32 dp[N][N], nxt[2][N][26];
   char s[N], t[N];
   bool _2;
   void main() {
@@ -49,24 +50,36 @@ namespace Solution_Of_HLP1309 {
     fscanf(fin, "%s %s", s + 1, t + 1);
     int64 Start_Time_Without_Read = clock();
     n = strlen(s + 1), m = strlen(t + 1);
-    std::memset(dp, 0x3f, sizeof dp);
-    std::memset(min, 0x3f, sizeof min);
-    dp[0][0] = 0;
-    for (int32 i = 1; i <= n; ++i) {
-      for (int32 j = 2; j <= m; ++j) min[j] = min[j] + b;
-      for (int32 j = 0; j <= m; ++j) {
-        if (s[i] == t[j] && j > 0) dp[i][j] = std::min(dp[i][j], dp[i - 1][j - 1]);
-        dp[i][j] = std::min(dp[i][j], dp[i - 1][j] + b);
-        if (j > 0) dp[i][j] = std::min(dp[i][j], dp[i - 1][j - 1] + c);
-        if (s[i - 1] == t[j] && j > 1)
-          min[j] = std::min(min[j], dp[i - 2][j - 2]);
-        if (i > 1 && j > 1 && s[i] == t[j - 1])
-          dp[i][j] = std::min(dp[i][j], min[j] + d);
-      }
-      for (int32 j = 1; j <= m; ++j)
-        dp[i][j] = std::min(dp[i][j], dp[i][j - 1] + a);
+    for (int32 i = 0; i < 26; ++i) {
+      nxt[0][n + 1][i] = n + 1;
+      nxt[1][m + 1][i] = m + 1;
     }
-    fprintf(fout, "%d\n", dp[n][m]);
+    for (int32 i = n; i >= 1; --i) {
+      for (int32 j = 0; j < 26; ++j) nxt[0][i][j] = nxt[0][i + 1][j];
+      nxt[0][i][s[i] - 'a'] = i;
+    }
+    for (int32 i = m; i >= 1; --i) {
+      for (int32 j = 0; j < 26; ++j) nxt[1][i][j] = nxt[1][i + 1][j];
+      nxt[1][i][t[i] - 'a'] = i;
+    }
+    std::memset(dp, 0x3f, sizeof dp);  
+    dp[0][0] = 0;
+    auto cmin = [&](auto &x, auto y)->void { return x = (x < y ? x : y), void(); };
+    s[n + 1] = 1, s[n + 2] = 4, t[m + 1] = 5, t[m + 2] = 9;
+    for (int32 i = 0; i <= n; ++i) {
+      for (int32 j = 0; j <= m; ++j) {
+        if (s[i + 1] == t[j + 1]) cmin(dp[i + 1][j + 1], dp[i][j]);
+        else cmin(dp[i + 1][j + 1], dp[i][j] + c);
+        cmin(dp[i][j + 1], dp[i][j] + a);
+        cmin(dp[i + 1][j], dp[i][j] + b);
+        if (i > n - 2 || j > n - 2) continue;
+        int32 t1 = nxt[0][i + 2][t[j + 1] - 'a'];
+        int32 t2 = nxt[1][j + 2][s[i + 1] - 'a'];
+        if (t1 > n || t2 > m) continue;
+        cmin(dp[t1][t2], dp[i][j] + d + (t1 - i - 2) * b + (t2 - j - 2) * a);
+      }
+    }
+    fprintf(fout, "%lld\n", dp[n][m]);
     int64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();

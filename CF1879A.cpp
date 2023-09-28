@@ -35,43 +35,29 @@ namespace FileHeader {
   };
 }
 using namespace FileHeader;
-namespace Solution_Of_HLP1310 {
+namespace Solution_Of_CF1879A {
   bool _1;
-  static const int32 N = 1005, M = 2 * N;
-  static const int32 dx[] = {-1, -1, -2, -2, 1, 1, 2, 2};
-  static const int32 dy[] = {2, -2, 1, -1, 2, -2, 1, -1};
-  int32 n, m;
-  std::map<int32, std::map<int32, int32>> step;
-  int32 calc(int32 x) {
-    if (x % 4 == 0) return x / 2;
-    else return (x + 2) / 2;
-  }
-  void solve() {
-    int32 nn = read(), mm = read();
-    n = read() - nn, m = read() - mm;
-    if (n < 0) n = -n;
-    if (m < 0) m = -m;
-    if (n == 0 && m == 0) fprintf(fout, "%d\n", 0);
-    else if ((n == 1 && m == 0) || (n == 0 && m == 1)) fprintf(fout, "%d\n", 3);
-    else if (n == 1 && m == 1) fprintf(fout, "%d\n", 2);
-    else if (n == 2 && m == 2) fprintf(fout, "%d\n", 4);
-    else if (n <= 2 * m && m <= 2 * n) fprintf(fout, "%d\n", (m + n) / 3 + (m + n) % 3);
-    else if (n == 0 || m == 0) fprintf(fout, "%d\n", 2 * ((n + m - 2) / 4) + (n + m - 2) % 2 + 2);
-    else if (n > 2 * m) fprintf(fout, "%d\n", (n - 2 * m) / 4 * 2 + (n - 2 * m) % 4 + m);
-    else if (m > 2 * n) fprintf(fout, "%d\n", (m - 2 * n) / 4 * 2 + (m - 2 * n) % 4 + n);
-    return void();
-  }
+  static const int32 N = 105;
+  int32 n;
+  int32 s[N], e[N];
   bool _2;
+  void solve() {
+    n = read();
+    for (int32 i = 1; i <= n; ++i) s[i] = read(), e[i] = read();
+    int32 w = 0;
+    for (int32 i = 2; i <= n; ++i) if (e[i] >= e[1]) w = std::max(w, s[i]);
+    if (w >= s[1]) fputs("-1\n", fout);
+    else fprintf(fout, "%d\n", w + 1); 
+  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    // int32 t = read();
+    int32 t = read();
     int64 Start_Time_Without_Read = clock();
-    // while (t--) solve();
-    solve();
+    while (t--) solve();
     int64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_HLP1310::main(), 0; }
+signed main() { return Solution_Of_CF1879A::main(), 0; }

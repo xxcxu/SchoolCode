@@ -35,43 +35,62 @@ namespace FileHeader {
   };
 }
 using namespace FileHeader;
-namespace Solution_Of_HLP1310 {
+namespace Solution_Of_CF1879C {
   bool _1;
-  static const int32 N = 1005, M = 2 * N;
-  static const int32 dx[] = {-1, -1, -2, -2, 1, 1, 2, 2};
-  static const int32 dy[] = {2, -2, 1, -1, 2, -2, 1, -1};
-  int32 n, m;
-  std::map<int32, std::map<int32, int32>> step;
-  int32 calc(int32 x) {
-    if (x % 4 == 0) return x / 2;
-    else return (x + 2) / 2;
+  static const int32 N = 200005;
+  static const int32 P = 998244353;
+  int32 n;
+  int32 fac[N], inv[N];
+  char s[N];
+  struct node { int32 op, len; } a[N];
+  bool _2;
+  int32 inc(int32 x, int32 y) { return (x + y) % P; }
+  int32 dec(int32 x, int32 y) { return (x + P - y) % P; }
+  int32 mul(int32 x, int32 y) { return 1ll * x * y % P; }
+  int32 qpow(int32 x, int32 y) {
+    int32 ans = 1;
+    for (; y; y >>= 1, x = mul(x, x))
+      if (y & 1) ans = mul(ans, x);
+    return ans;
   }
-  void solve() {
-    int32 nn = read(), mm = read();
-    n = read() - nn, m = read() - mm;
-    if (n < 0) n = -n;
-    if (m < 0) m = -m;
-    if (n == 0 && m == 0) fprintf(fout, "%d\n", 0);
-    else if ((n == 1 && m == 0) || (n == 0 && m == 1)) fprintf(fout, "%d\n", 3);
-    else if (n == 1 && m == 1) fprintf(fout, "%d\n", 2);
-    else if (n == 2 && m == 2) fprintf(fout, "%d\n", 4);
-    else if (n <= 2 * m && m <= 2 * n) fprintf(fout, "%d\n", (m + n) / 3 + (m + n) % 3);
-    else if (n == 0 || m == 0) fprintf(fout, "%d\n", 2 * ((n + m - 2) / 4) + (n + m - 2) % 2 + 2);
-    else if (n > 2 * m) fprintf(fout, "%d\n", (n - 2 * m) / 4 * 2 + (n - 2 * m) % 4 + m);
-    else if (m > 2 * n) fprintf(fout, "%d\n", (m - 2 * n) / 4 * 2 + (m - 2 * n) % 4 + n);
+  void init(int32 n) {
+    fac[0] = 1;
+    for (int32 i = 1; i <= n; ++i) fac[i] = mul(fac[i - 1], i);
+    inv[n] = qpow(fac[n], P - 2);
+    for (int32 i = n - 1; i >= 0; --i) inv[i] = mul(inv[i + 1], i + 1);
     return void();
   }
-  bool _2;
+  int32 binom(int32 n, int32 m) {
+    if (n < m || m < 0) return 0;
+    return mul(fac[n], mul(inv[m], inv[n - m]));
+  }
+  void solve() {
+    fscanf(fin, "%s", s + 1);
+    n = strlen(s + 1);
+    for (int32 i = 1; i <= n; ++i) s[i] -= '0';
+    int32 cnt = 0;
+    for (int32 i = 1; i <= n; ++i) {
+      if (a[cnt].op != s[i] || cnt == 0)
+        a[++cnt].op = s[i], a[cnt].len = 0;
+      ++a[cnt].len;
+    }
+    int32 operators = 0, plan = 1;
+    for (int32 i = 1; i <= cnt; ++i) operators = inc(operators, a[i].len - 1);
+    for (int32 i = 1; i <= cnt; ++i) plan = mul(plan, a[i].len);
+    plan = mul(plan, fac[operators]);
+    fprintf(fout, "%d %d\n", operators, plan);
+    return void();
+  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    // int32 t = read();
+    init(N - 1);
+    int32 t = read();
     int64 Start_Time_Without_Read = clock();
-    // while (t--) solve();
-    solve();
+    while (t--) solve();
     int64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_HLP1310::main(), 0; }
+signed main() { return Solution_Of_CF1879C::main(), 0; }
