@@ -36,31 +36,64 @@ namespace FileHeader {
   };
 }
 using namespace FileHeader;
-namespace Solution_Of_ {
+namespace Solution_Of_P4062 {
   bool _1;
 #pragma endregion
+  static const i32 N = 500005;
+  i32 n, ignore;
+  i32 a[N];
+  i64 s1[N * 2], s2[N * 2], s3[N * 2];
+  std::vector<i32> pos[N];
+  void add(i32 x, i32 v) {
+    for (i32 i = x; i <= 2 * n + 1; i += i & -i) {
+      s1[i] += 1ll * v;
+      s2[i] += 1ll * v * x;
+      s3[i] += 1ll * v * x * x;
+    }
+    return void();
+  }
+  i64 ask(i32 x) {
+    i64 ans = 0;
+    for (i32 i = x; i >= 1; i -= i & -i) {
+      ans += 1ll * (x + 1) * (x + 2) * s1[i];
+      ans -= 1ll * (2 * x + 3) * s2[i];
+      ans += 1ll * s3[i];
+    }
+    return ans / 2;
+  }
   bool _2;
-  i32 a[50];
-  i32 rnd(i32 l, i32 r) { return 1ll * rand() * rand() % (r - l + 2) + l; }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    srand(time(0));
-    fout = fopen("data.in", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    i32 n = rnd(1, 10), m = rnd(1, 10);
+    n = read(), ignore = read();
+    for (i32 i = 1; i <= n; ++i) a[i] = read();
+    for (i32 i = 1; i <= n; ++i) pos[a[i]].eb(i);
     i64 Start_Time_Without_Read = clock();
-    fprintf(fout, "%d %d\n", n, m);
-    i32 k = 0;
-    for (i32 i = 1; i <= n; ++i) {
-      i32 op = rnd(0, 1);
-      if (op || k > 5) a[i] = rnd(0, m);
-      else a[i] = -1, ++k;
-      fprintf(fout, "%d ", a[i]);
+    i32 D = n + 1;
+    i64 ans = 0;
+    for (i32 i = 0; i < n; ++i) {
+      pos[i].eb(n + 1);
+      static i32 lst;
+      lst = 0;
+      for (i32 j = 0; j < size(pos[i]); ++j) {
+        i32 r = 2 * j - lst + D, l = 2 * j - pos[i][j] + 1 + D;
+        ans += ask(r - 1) - (l >= 3 ? ask(l - 2) : 0);
+        add(l, 1);
+        add(r + 1, -1);
+        lst = pos[i][j];
+      }
+      lst = 0;
+      for (i32 j = 0; j < size(pos[i]); ++j) {
+        i32 r = 2 * j - lst + D, l = 2 * j - pos[i][j] + 1 + D;
+        add(l, -1);
+        add(r + 1, 1);
+        lst = pos[i][j];
+      }
     }
-    fputs("\n", fout);
+    fprintf(fout, "%lld\n", ans);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_::main(), 0; }
+signed main() { return Solution_Of_P4062::main(), 0; }

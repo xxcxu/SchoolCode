@@ -4,8 +4,8 @@ namespace FileHeader {
   using i16 = int16_t;
   using i32 = int32_t;
   using i64 = int64_t;
-  using ui32 = uint32_t;
-  using ui64 = uint64_t;
+  using u32 = uint32_t;
+  using u64 = uint64_t;
   #define ep emplace
   #define eb emplace_back
   #define all(x) x.begin(), x.end()
@@ -36,31 +36,33 @@ namespace FileHeader {
   };
 }
 using namespace FileHeader;
-namespace Solution_Of_ {
+namespace Solution_Of_HLP1378 {
   bool _1;
 #pragma endregion
+  static const i32 N = 100005;
+  i32 n, m, k;
+  char s[N];
   bool _2;
-  i32 a[50];
-  i32 rnd(i32 l, i32 r) { return 1ll * rand() * rand() % (r - l + 2) + l; }
+  void solve() {
+    n = read(), m = read(), k = read();
+    fscanf(fin, "%s", s + 1);
+    for (i32 i = 1; i <= m; ++i) {
+      static i32 u, v;
+      u = read(), v = read();
+    }
+    if (m == n - 1) fputs(((s[1] == 'P') ? "G\n" : "P\n"), fout);
+    else fputs(((s[(m - n + 1) % k + 1] == 'P') ? "G\n" : "P\n"), fout);
+    return void();
+  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    srand(time(0));
-    fout = fopen("data.in", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    i32 n = rnd(1, 10), m = rnd(1, 10);
+    i32 t = read();
     i64 Start_Time_Without_Read = clock();
-    fprintf(fout, "%d %d\n", n, m);
-    i32 k = 0;
-    for (i32 i = 1; i <= n; ++i) {
-      i32 op = rnd(0, 1);
-      if (op || k > 5) a[i] = rnd(0, m);
-      else a[i] = -1, ++k;
-      fprintf(fout, "%d ", a[i]);
-    }
-    fputs("\n", fout);
+    while (t--) solve();
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_::main(), 0; }
+signed main() { return Solution_Of_HLP1378::main(), 0; }

@@ -143,5 +143,6 @@
     "all": "cpp",
     "convolution": "cpp",
     "fenwicktree": "cpp"
-  }
+  },
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
 }

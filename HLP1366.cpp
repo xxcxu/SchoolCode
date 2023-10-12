@@ -36,31 +36,30 @@ namespace FileHeader {
   };
 }
 using namespace FileHeader;
-namespace Solution_Of_ {
+namespace Solution_Of_HLP1366 {
   bool _1;
 #pragma endregion
+  i32 n;
   bool _2;
-  i32 a[50];
-  i32 rnd(i32 l, i32 r) { return 1ll * rand() * rand() % (r - l + 2) + l; }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    srand(time(0));
-    fout = fopen("data.in", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    i32 n = rnd(1, 10), m = rnd(1, 10);
+    n = read();
     i64 Start_Time_Without_Read = clock();
-    fprintf(fout, "%d %d\n", n, m);
-    i32 k = 0;
-    for (i32 i = 1; i <= n; ++i) {
-      i32 op = rnd(0, 1);
-      if (op || k > 5) a[i] = rnd(0, m);
-      else a[i] = -1, ++k;
-      fprintf(fout, "%d ", a[i]);
-    }
-    fputs("\n", fout);
+    i32 s = (n & 1) ? ((n + 1) / 2 * 3 - 1) : (n / 2 * 3);
+    i32 cnt = 0;
+    for (i32 i = 0; i <= n; ++i)
+      for (i32 j = 0; j <= n; ++j)
+        if (i + j <= s && (s - i - j) <= n)
+          ++cnt;
+    fprintf(fout, "%d\n", cnt);
+    for (i32 i = 0; i <= n; ++i)
+      for (i32 j = 0; j <= n; ++j)
+        if (i + j <= s && (s - i - j) <= n)
+          fprintf(fout, "%d %d %d\n", i, j, s - i - j);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_::main(), 0; }
+signed main() { return Solution_Of_HLP1366::main(), 0; }
