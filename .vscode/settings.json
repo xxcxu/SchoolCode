@@ -144,5 +144,6 @@
     "convolution": "cpp",
     "fenwicktree": "cpp"
   },
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "C_Cpp.errorSquiggles": "enabled"
 }
