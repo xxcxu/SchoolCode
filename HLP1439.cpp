@@ -22,47 +22,37 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_bf {
+namespace Solution_Of_HLP1439 {
   bool _1;
-  static const i32 N = 200005;
-  i32 n, m, ans;
-  i32 a[N];
-  i32 col[N];
-  std::vector<i32> e[N];
+  static const i32 N = 1000005;
+  i32 n;
+  i32 a[N], b[25], c[1 << 20];
   bool _2;
-  bool check() {
-    for (i32 i = 1; i <= n; ++i)
-      for (i32 j : e[i])
-        if (col[i] == col[j])
-          return false;
-    return true;
-  }
-  void dfs(i32 x) {
-    if (x == n + 1) {
-      if (check())
-        ++ans;
-      return void();
-    }
-    for (i32 i = 1; i <= a[x]; ++i)
-      col[x] = i, dfs(x + 1);
-    return void();
-  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
+    fin = fopen("mexor.in", "r");
+    fout = fopen("mexor.out", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    n = read(), m = read();
+    n = read();
     for (i32 i = 1; i <= n; ++i) a[i] = read();
-    for (i32 i = 1; i <= m; ++i) {
-      static i32 u, v;
-      u = read(), v = read();
-      e[u].eb(v), e[v].eb(u);
-    }
     i64 Start_Time_Without_Read = clock();
-    dfs(1);
+    for (i32 i = 1; i <= n; ++i) ++c[a[i]];
+    for (i32 i = 1; i <= n; ++i) c[i] = std::min(c[i], c[i - 1]);
+    for (i32 i = 1; i <= n; ++i)
+      if (c[i] != c[i - 1]) {
+        i32 d = c[i - 1] - c[i];
+        for (i32 j = 20; j >= 0; --j)
+          if (i >> j & 1)
+            b[j] += d;
+      }
+    i32 ans = 0;
+    for (i32 i = 20; i >= 0; --i) 
+      if (b[i] > 1) { ans |= (1u << i + 1) - 1; break; }
+      else if (b[i] > 0) ans |= (1u << i); 
     fprintf(fout, "%d\n", ans);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_bf::main(), 0; }
+signed main() { return Solution_Of_HLP1439::main(), 0; }

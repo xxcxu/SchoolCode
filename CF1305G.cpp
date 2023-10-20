@@ -22,47 +22,46 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_bf {
+namespace Solution_Of_CF1305G {
   bool _1;
-  static const i32 N = 200005;
-  i32 n, m, ans;
-  i32 a[N];
-  i32 col[N];
-  std::vector<i32> e[N];
+  static const i32 N = (1 << 18) + 5;
+  i32 n; i64 ans;
+  i32 a[N], fa[N], cnt[N], size[N];
   bool _2;
-  bool check() {
-    for (i32 i = 1; i <= n; ++i)
-      for (i32 j : e[i])
-        if (col[i] == col[j])
-          return false;
-    return true;
-  }
-  void dfs(i32 x) {
-    if (x == n + 1) {
-      if (check())
-        ++ans;
-      return void();
-    }
-    for (i32 i = 1; i <= a[x]; ++i)
-      col[x] = i, dfs(x + 1);
+  i32 find(i32 x) { return x == fa[x] ? x : fa[x] = find(fa[x]); }
+  void merge(i32 x, i32 y, i32 z) {
+    if (!cnt[x] || !cnt[y]) return void();
+    x = find(x), y = find(y);
+    if (x == y) return void();
+    if (size[x] > size[y]) std::swap(x, y);
+    ans += 1ll * z * (cnt[x] + cnt[y] - 1);
+    fa[x] = y;
+    cnt[y] = 1;
+    size[y] += size[x];
     return void();
   }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    n = read(), m = read();
+    n = read();
+    ++cnt[0];
     for (i32 i = 1; i <= n; ++i) a[i] = read();
-    for (i32 i = 1; i <= m; ++i) {
-      static i32 u, v;
-      u = read(), v = read();
-      e[u].eb(v), e[v].eb(u);
-    }
     i64 Start_Time_Without_Read = clock();
-    dfs(1);
-    fprintf(fout, "%d\n", ans);
+    for (i32 i = 1; i <= n; ++i) ans -= a[i];
+    for (i32 i = 1; i <= n; ++i) ++cnt[a[i]];
+    i32 m = 1;
+    i32 max = *std::max_element(a + 1, a + n + 1);
+    while (m <= max) m <<= 1;
+    for (i32 i = 0; i <= m; ++i) fa[i] = i, size[i] = 1;
+    for (i32 S = m; S >= 0; --S) {
+      for (i32 T = S; T; T = (T - 1) & S)
+        merge(T, S ^ T, S);
+      merge(S, 0, S);
+    }
+    fprintf(fout, "%lld\n", ans);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_bf::main(), 0; }
+signed main() { return Solution_Of_CF1305G::main(), 0; }

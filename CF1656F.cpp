@@ -22,47 +22,41 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_bf {
+namespace Solution_Of_CF1656F {
   bool _1;
   static const i32 N = 200005;
-  i32 n, m, ans;
-  i32 a[N];
-  i32 col[N];
-  std::vector<i32> e[N];
+  i32 n, a[N];
+  i64 sum[N];
   bool _2;
-  bool check() {
-    for (i32 i = 1; i <= n; ++i)
-      for (i32 j : e[i])
-        if (col[i] == col[j])
-          return false;
-    return true;
+  i64 calc(i32 x, i32 t) {
+    return 
+    1ll * a[n] * (sum[x] - a[1]) +
+    1ll * t * (1ll * (x - 1) * a[n] + (sum[x] - a[1])) +
+    1ll * a[1] * (sum[n] - sum[x]) + 
+    1ll * t * (1ll * (n - x) * a[1] + (sum[n] - sum[x]));
   }
-  void dfs(i32 x) {
-    if (x == n + 1) {
-      if (check())
-        ++ans;
-      return void();
-    }
-    for (i32 i = 1; i <= a[x]; ++i)
-      col[x] = i, dfs(x + 1);
+  void solve() {
+    n = read();
+    for (i32 i = 1; i <= n; ++i) a[i] = read();
+    std::sort(a + 1, a + n + 1);
+    for (i32 i = 1; i <= n; ++i) sum[i] = sum[i - 1] + a[i];
+    if (1ll * (n - 1) * a[1] + (sum[n] - a[1]) > 0) return fputs("INF\n", fout), void();
+    if (1ll * (n - 1) * a[n] + (sum[n] - a[n]) < 0) return fputs("INF\n", fout), void();
+    i64 ans = LONG_LONG_MIN;
+    for (i32 i = 1; i <= n; ++i)
+      ans = std::max(ans, calc(i, -a[i]));
+    fprintf(fout, "%lld\n", ans);
     return void();
   }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    n = read(), m = read();
-    for (i32 i = 1; i <= n; ++i) a[i] = read();
-    for (i32 i = 1; i <= m; ++i) {
-      static i32 u, v;
-      u = read(), v = read();
-      e[u].eb(v), e[v].eb(u);
-    }
+    i32 t = read();
     i64 Start_Time_Without_Read = clock();
-    dfs(1);
-    fprintf(fout, "%d\n", ans);
+    while (t--) solve();
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_bf::main(), 0; }
+signed main() { return Solution_Of_CF1656F::main(), 0; }
