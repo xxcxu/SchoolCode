@@ -36,7 +36,8 @@
       "cppStandard": "c++20",
       "cStandard": "c23",
       "compilerArgs": [
-        "-I."
+        "-I.",
+        "-std=c++20"
       ]
     }
   ],

@@ -26,11 +26,11 @@ namespace Solution_Of_HLP1487 {
   bool _1;
   static const i32 N = 500005;
   i32 n, m;
-  i32 a[N * 2];
-  bool _2;
+  i32 a[N], b[N];
   i32 tot = 0;
-  i32 tr[N << 5], ls[N << 5], rs[N << 5];
-  i32 rt[N * 2];
+  i32 tr[N << 6], ls[N << 6], rs[N << 6];
+  i32 rt[N][2], ans[N];
+  bool _2;
   i32 newNode() { return ++tot; }
   struct SegmentTree {
     void pushup(i32 x) { return tr[x] = tr[ls[x]] + tr[rs[x]], void(); }
@@ -56,26 +56,7 @@ namespace Solution_Of_HLP1487 {
       if (qr > mid) ans += count(rs[x], rs[y], mid + 1, r, ql, qr);
       return ans;
     }
-  } seg;
-  i32 z[N * 2];
-  bool compare(i32 p, i32 len) {
-    i32 ret0 = 0, ret1 = 0;
-    i32 res0 = 0, res1 = 0;
-    ret0 = seg.count(rt[0], rt[len], 1, std::max(n, m), 1, a[len] - 1);
-    res0 = seg.count(rt[0], rt[len], 1, std::max(n, m), a[len], a[len]);
-    ret1 = seg.count(rt[p - 1], rt[p + len - 1], 1, std::max(n, m), 1, a[p + len - 1] - 1);
-    res1 = seg.count(rt[p - 1], rt[p + len - 1], 1, std::max(n, m), a[p + len - 1], a[p + len - 1]);
-    return ret0 == ret1 && res0 == res1;
-  }
-  void init() {
-    for (i32 i = 2, p = 1; i <= n + m; ++i) {
-      z[i] = 0;
-      if (p + z[p] - i >= 0) z[i] = std::min(z[i - p + 1], p + z[p] - i);
-      while (i + z[i] <= n + m && compare(i, z[i] + 1)) ++z[i];
-      if (i + z[i] > p + z[p]) p = i;
-    }
-    return void();
-  }
+  } seg[2];
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
     fin = fopen("string.in", "r");
@@ -83,12 +64,27 @@ namespace Solution_Of_HLP1487 {
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
     n = read(), m = read();
     for (i32 i = 1; i <= n; ++i) a[i] = read();
-    for (i32 i = 1; i <= m; ++i) a[i + n] = read();
+    for (i32 i = 1; i <= m; ++i) b[i] = read();
     i64 Start_Time_Without_Read = clock();
-    rt[0] = newNode();
-    for (i32 i = 1; i <= n + m; ++i) seg.insert(rt[i], rt[i - 1], 1, std::max(n, m), a[i]);
-    init();
-    for (i32 i = n + 1; i <= n + m; ++i) fprintf(fout, "%d%c", std::min(z[i], n), " \n"[i == n + m]);
+    rt[0][0] = newNode(), rt[0][1] = newNode();
+    for (i32 i = 1; i <= n; ++i) seg[0].insert(rt[i][0], rt[i - 1][0], 1, n, a[i]);
+    for (i32 i = 1; i <= m; ++i) seg[1].insert(rt[i][1], rt[i - 1][1], 1, m, b[i]);
+    for (i32 i = m; i >= 1; --i) {
+      ans[i] = std::min(m - i + 1, n);
+      for (i32 j = 1; j <= std::min(n, m - i + 1); ++j) {
+        i32 ret0 = 0, ret1 = 0;
+        ret0 = seg[0].count(rt[0][0], rt[j][0], 1, n, 1, a[j] - 1);
+        ret1 = seg[1].count(rt[i - 1][1], rt[i + j - 1][1], 1, m, 1, b[i + j - 1] - 1);
+        i32 res0 = 0, res1 = 0;
+        res0 = seg[0].count(rt[0][0], rt[j][0], 1, n, a[j], a[j]);
+        res1 = seg[1].count(rt[i - 1][1], rt[i + j - 1][1], 1, m, b[i + j - 1], b[i + j - 1]);
+        if (ret0 != ret1 || res0 != res1) {
+          ans[i] = j - 1;
+          break;
+        }
+      }
+    }
+    for (i32 i = 1; i <= m; ++i) fprintf(fout, "%d%c", ans[i], " \n"[i == m]);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
