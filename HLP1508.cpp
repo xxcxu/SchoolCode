@@ -20,30 +20,42 @@ i32 read() {
 template<typename T1, typename T2>
 constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); } 
 template<typename T1, typename T2>
-constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
+constexpr bool chkmin(T1 &a, T2 b) { return a >= b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_check {
+namespace Solution_Of_HLP1508 {
   bool _1;
-  static const i32 N = 1005;
-  i32 n;
-  i32 a[N], b[N];
+  static const i32 N = 1000005;
+  i32 n, k;
+  i32 d[N], dep[N], ind[N];
+  std::vector<i32> e[N];
   bool _2;
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
+    // fin = fopen("ex_lost2.in", "r");
+    fin = fopen("lost.in", "r");
+    fout = fopen("lost.out", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
     i64 Start_Time_Without_Read = clock();
-    i32 t = 10000;
-    while (t--) {
-      system("random.exe");
-      system("HLP1552.exe");
-      fin = fopen("data.in", "r");
-      i32 n = read(), m = read(), k = read();
-      fprintf(fout, "%d %d %d\n", n, m, k);
-      if (system("chk.exe data.in data.out data.ans")) break;
+    n = read(), k = read();
+    for (i32 i = 1; i <= n; ++i) d[i] = read();
+    i32 ans = (d[1] != 1);  
+    for (i32 i = 2; i <= n; ++i) ++ind[d[i]];
+    std::queue<i32> q;
+    for (i32 i = 1; i <= n; ++i) if (!ind[i]) q.ep(i);
+    while (q.size()) {
+      i32 x = q.front(); q.pop();
+      if (x == 1) break;
+      if (dep[x] == k - 1 && d[x] != 1) {
+        dep[x] = -1;
+        ++ans;
+      }
+      dep[d[x]] = std::max(dep[d[x]], dep[x] + 1);
+      if(!--ind[d[x]]) q.ep(d[x]);
     }
+    fprintf(fout, "%d\n", ans);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_check::main(), 0; }
+signed main() { return Solution_Of_HLP1508::main(), 0; }

@@ -22,46 +22,46 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_HLP1485 {
+namespace Solution_Of_HLP1507 {
   bool _1;
-  static const i32 N = 100005, M = 1000005;
-  i32 n, m;
-  i32 a[N], b[N]; 
-  i32 vis[M], end[M], nxt[M];
-  i32 ans[N];
+  static const i32 N = 1 << 21;
+  i32 n, k;
+  i32 a[N], pre[25][N];
   bool _2;
-  void dfs(i32 x) {
-    if (!nxt[x]) end[x] = x;
-    else dfs(nxt[x]), end[x] = end[nxt[x]];
-    return void();
+  i32 dfs(i32 x, i32 pr) {
+    if (x == 0) {
+      if (k >> x & 1)
+        return pre[x][pr | 0] + pre[x][pr | 1];
+      else
+        return std::max(pre[x][pr | 0], pre[x][pr | 1]);
+    }
+    if (k >> x & 1) {
+      return std::max(dfs(x - 1, pr) + pre[x][pr | (1 << x)], dfs(x - 1, pr | (1 << x)) + pre[x][pr]);
+    } else {
+      return std::max(dfs(x - 1, pr | (1 << x)), dfs(x - 1, pr));
+    }
   }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    fin = fopen("marketplace.in", "r");
-    fout = fopen("marketplace.out", "w");
+    // fin = fopen("data.in", "r");
+    // fout = fopen("data.out", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    n = read(), m = read();
-    for (i32 i = 1; i <= n; ++i) a[i] = read(), b[i] = read();
     i64 Start_Time_Without_Read = clock();
-    i32 p = 0;
-    auto work = [&]()->bool {
-      for (i32 i = 1; i <= n; ++i) {
-        if (!vis[a[i]]) { vis[a[i]] = i; if (!vis[b[i]]) nxt[a[i]] = b[i]; }
-        else if (!vis[b[i]]) vis[b[i]] = i;  
-        else {
-          p = i;
-          return false;
-        }
+    n = read(), k = read();
+    for (i32 i = 1; i <= n; ++i) a[i] = read();
+    for (i32 i = 1; i <= n; ++i) {
+      i32 q = a[i];
+      ++pre[0][q];
+      for (i32 j = 1; j < 21; ++j) {
+        q >>= j; q <<= j;
+        ++pre[j][q];
       }
-      return true;
-    };
-    while (work());
-    for (i32 i = 1; i <= m; ++i) if (!end[i]) dfs(i);
-    for (i32 i = 1; i <= m; ++i) if (!vis[end[i]]) ++ans[p]; else ++ans[vis[end[i]]];
-    for (i32 i = 1; i <= n; ++i) fprintf(fout, "%d\n", ans[i]);
+    }
+    i32 ans = dfs(20, 0);
+    fprintf(fout, "%d\n", ans);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_HLP1485::main(), 0; }
+signed main() { return Solution_Of_HLP1507::main(), 0; }

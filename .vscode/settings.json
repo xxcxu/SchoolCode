@@ -142,8 +142,10 @@
     "mincostflow": "cpp",
     "all": "cpp",
     "convolution": "cpp",
-    "fenwicktree": "cpp"
+    "fenwicktree": "cpp",
+    "rope": "cpp",
+    "slist": "cpp"
   },
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "C_Cpp.errorSquiggles": "enabled"
+  "C_Cpp.errorSquiggles": "disabled"
 }

@@ -22,46 +22,37 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_HLP1485 {
+namespace Solution_Of_ {
   bool _1;
-  static const i32 N = 100005, M = 1000005;
-  i32 n, m;
-  i32 a[N], b[N]; 
-  i32 vis[M], end[M], nxt[M];
-  i32 ans[N];
+  i32 n;
+  std::pair<i32, i32> a[1000];
+  std::map<std::pair<i32, i32>, bool> vis;
   bool _2;
-  void dfs(i32 x) {
-    if (!nxt[x]) end[x] = x;
-    else dfs(nxt[x]), end[x] = end[nxt[x]];
-    return void();
-  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    fin = fopen("marketplace.in", "r");
-    fout = fopen("marketplace.out", "w");
+    fin = fopen("data2.in", "r");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    n = read(), m = read();
-    for (i32 i = 1; i <= n; ++i) a[i] = read(), b[i] = read();
     i64 Start_Time_Without_Read = clock();
-    i32 p = 0;
-    auto work = [&]()->bool {
-      for (i32 i = 1; i <= n; ++i) {
-        if (!vis[a[i]]) { vis[a[i]] = i; if (!vis[b[i]]) nxt[a[i]] = b[i]; }
-        else if (!vis[b[i]]) vis[b[i]] = i;  
-        else {
-          p = i;
-          return false;
+    i32 t = read();
+    while (t--) {
+      n = read();
+      i32 lstx = 1, lsty = 1;
+      vis.clear();
+      for (i32 i = 1; i <= n * 4; ++i) {
+        i32 x = read(), y = read();
+        if (vis.count(std::pair(x, y))) { fputs("No\n", fout); break; }
+        vis[std::pair(x, y)] = true;
+        if (i != 1) {
+          if ((std::abs(x - lstx) != 2 && std::abs(y - lsty) != 2)) { fputs("No\n", fout); break; }
+          if ((std::abs(x - lstx) != 1 && std::abs(y - lsty) != 1)) { fputs("No\n", fout); break; }
         }
+        lstx = x, lsty = y;
       }
-      return true;
-    };
-    while (work());
-    for (i32 i = 1; i <= m; ++i) if (!end[i]) dfs(i);
-    for (i32 i = 1; i <= m; ++i) if (!vis[end[i]]) ++ans[p]; else ++ans[vis[end[i]]];
-    for (i32 i = 1; i <= n; ++i) fprintf(fout, "%d\n", ans[i]);
+      fputs("Yes\n", fout);
+    }
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_HLP1485::main(), 0; }
+signed main() { return Solution_Of_::main(), 0; }

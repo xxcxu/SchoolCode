@@ -22,19 +22,33 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_rnd {
+namespace Solution_Of_mayoi {
+  bool _1;
+  static const i32 N = 1000005;
+  i32 n;
+  i32 z[N], a[N], fail[N];
   bool _2;
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    fout = fopen("data.in", "w");
-    std::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
-    std::uniform_int_distribution<i32> rnd(1, 500);
-    // fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
+    fin = fopen("mayoi.in", "r");
+    fout = fopen("mayoi.out", "w");
+    fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
     i64 Start_Time_Without_Read = clock();
-    fprintf(fout, "%d %d %d\n", rnd(gen), rnd(gen), rnd(gen));
+    n = read();
+    for (i32 i = 1; i <= n; ++i) fail[i] = read();
+    i32 t = 0;
+    for (i32 i = 1; i <= n; ++i)
+      a[i] = fail[i] ? a[fail[i]] : ++t;
+    z[1] = n;
+    for (i32 i = 2, l = 0, r = 0; i <= n; ++i) {
+      if (i <= r) z[i] = std::min(z[i - l + 1] , r - i + 1);
+      while (i + z[i] <= n && a[i + z[i]] == a[z[i] + 1]) ++z[i];
+      if (i + z[i] - 1 > r) l = i, r = i + z[i] - 1;
+    }
+    for (i32 i = 1; i <= n; ++i) fprintf(fout, "%d%c", z[i], " \n"[i == n]);
     i64 End_Time_Without_Read = clock();
-    // fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
+    fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_rnd::main(), 0; }
+signed main() { return Solution_Of_mayoi::main(), 0; }

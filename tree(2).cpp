@@ -22,46 +22,50 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_HLP1485 {
+namespace Solution_Of_HLP1551 {
   bool _1;
-  static const i32 N = 100005, M = 1000005;
-  i32 n, m;
-  i32 a[N], b[N]; 
-  i32 vis[M], end[M], nxt[M];
-  i32 ans[N];
+  static const i32 N = 200005;
+  i32 n, m, t;
+  i64 len;
+  i32 p[N];
+  i64 dp[N];
+  std::vector<i32> e[N];
   bool _2;
   void dfs(i32 x) {
-    if (!nxt[x]) end[x] = x;
-    else dfs(nxt[x]), end[x] = end[nxt[x]];
+    for (i32 y : e[x]) {
+      dfs(y);
+      chkmax(dp[x], dp[y] + 1);
+    }
+    return void();
+  }
+  void dfs2(i32 x) {
+    dp[x] = 0;
+    if (!(e[x].size()) && x != 1)
+      dp[x] += 1LL * (m - 1) * t;
+    for (i32 y : e[x]) {
+      dfs2(y);
+      len = std::max(len, dp[x] + dp[y] + 2);
+      dp[x] = std::max(dp[x], dp[y] + 1);
+    }
+    len = std::max(len, dp[x] + 1);
     return void();
   }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    fin = fopen("marketplace.in", "r");
-    fout = fopen("marketplace.out", "w");
+    fin = fopen("tree.in", "r");
+    fout = fopen("tree.out", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    n = read(), m = read();
-    for (i32 i = 1; i <= n; ++i) a[i] = read(), b[i] = read();
     i64 Start_Time_Without_Read = clock();
-    i32 p = 0;
-    auto work = [&]()->bool {
-      for (i32 i = 1; i <= n; ++i) {
-        if (!vis[a[i]]) { vis[a[i]] = i; if (!vis[b[i]]) nxt[a[i]] = b[i]; }
-        else if (!vis[b[i]]) vis[b[i]] = i;  
-        else {
-          p = i;
-          return false;
-        }
-      }
-      return true;
-    };
-    while (work());
-    for (i32 i = 1; i <= m; ++i) if (!end[i]) dfs(i);
-    for (i32 i = 1; i <= m; ++i) if (!vis[end[i]]) ++ans[p]; else ++ans[vis[end[i]]];
-    for (i32 i = 1; i <= n; ++i) fprintf(fout, "%d\n", ans[i]);
+    n = read(), m = read();
+    for (i32 i = 2; i <= n; ++i) p[i] = read();
+    for (i32 i = 2; i <= n; ++i) e[p[i]].eb(i);
+    dfs(1);
+    t = dp[1] + 1;
+    dfs2(1);
+    fprintf(fout, "%lld\n", len);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_HLP1485::main(), 0; }
+signed main() { return Solution_Of_HLP1551::main(), 0; }

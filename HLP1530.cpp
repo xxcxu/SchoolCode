@@ -1,3 +1,4 @@
+// 郑梓妍😭 钟晨瑶😭
 #pragma region
 #include <bits/stdc++.h>
 using i16 = int16_t;
@@ -22,46 +23,36 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_HLP1485 {
+namespace Solution_Of_HLP1530 {
   bool _1;
-  static const i32 N = 100005, M = 1000005;
-  i32 n, m;
-  i32 a[N], b[N]; 
-  i32 vis[M], end[M], nxt[M];
-  i32 ans[N];
+  static const i32 N = 500005;
+  i32 n;
+  struct Node { i32 a, b; } a[N];
   bool _2;
-  void dfs(i32 x) {
-    if (!nxt[x]) end[x] = x;
-    else dfs(nxt[x]), end[x] = end[nxt[x]];
-    return void();
-  }
+  struct compare {
+    bool operator ()(i32 &x, i32 &y) { return a[x].a < a[y].a; }
+  };
+  std::priority_queue<i32, std::vector<i32>, compare> q;
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    fin = fopen("marketplace.in", "r");
-    fout = fopen("marketplace.out", "w");
+    fin = fopen("ball.in", "r");
+    fout = fopen("ball.out", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
-    n = read(), m = read();
-    for (i32 i = 1; i <= n; ++i) a[i] = read(), b[i] = read();
     i64 Start_Time_Without_Read = clock();
-    i32 p = 0;
-    auto work = [&]()->bool {
-      for (i32 i = 1; i <= n; ++i) {
-        if (!vis[a[i]]) { vis[a[i]] = i; if (!vis[b[i]]) nxt[a[i]] = b[i]; }
-        else if (!vis[b[i]]) vis[b[i]] = i;  
-        else {
-          p = i;
-          return false;
-        }
-      }
-      return true;
-    };
-    while (work());
-    for (i32 i = 1; i <= m; ++i) if (!end[i]) dfs(i);
-    for (i32 i = 1; i <= m; ++i) if (!vis[end[i]]) ++ans[p]; else ++ans[vis[end[i]]];
-    for (i32 i = 1; i <= n; ++i) fprintf(fout, "%d\n", ans[i]);
+    n = read();
+    for (i32 i = 1; i <= n; ++i) a[i].a = read();
+    for (i32 i = 1; i <= n; ++i) a[i].b = read();
+    std::sort(a + 1, a + n + 1, [&](const Node &a, const Node &b) { return a.a + a.b < b.a + b.b; });
+    i32 ans = 0; i64 now = 0;
+    for (i32 i = 1; i <= n; ++i){
+      if (a[i].b >= now) now += a[i].a, q.ep(i);
+      else if (a[q.top()].a > a[i].a) now += a[i].a - a[q.top()].a, q.pop(), q.push(i);
+      ans = std::max(ans, (i32)q.size());
+    }
+    fprintf(fout, "%d\n", ans);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_HLP1485::main(), 0; }
+signed main() { return Solution_Of_HLP1530::main(), 0; }

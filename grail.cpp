@@ -22,46 +22,48 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_treasure {
+namespace Solution_Of_grail {
   bool _1;
-  static const i32 N = 100005, M = 105;
-  i32 n, m, k;
-  char arr[N][M];
-  i32 sum[N][M];
-  i32 cnt[N], cnt2[N];
-  std::vector<i32> vec;
+  static const i32 N = 1000005;
+  static const i32 P = 998244353;
+  i32 n;
+  i32 a[N], d[N], st[N], top;
   bool _2;
+  i32 inc(i32 x, i32 y) { return (x + y) % P; }
+  i32 dec(i32 x, i32 y) { return (x + P - y) % P; }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    fin = fopen("treasure.in", "r");
-    fout = fopen("treasure.out", "w");
+    fin = fopen("grail.in", "r");
+    fout = fopen("grail.out", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
     i64 Start_Time_Without_Read = clock();
-    n = read(), m = read(), k = read();
-    for (i32 i = 1; i <= n; ++i) fscanf(fin, "%s", arr[i] + 1);
-    for (i32 i = 1; i <= n; ++i)
-      for (i32 j = 1; j <= m; ++j)
-        sum[i][j] = sum[i - 1][j] + sum[i][j - 1] - sum[i - 1][j - 1] + (arr[i][j] == '$');
-    for (i32 i = 1; i <= m; ++i)
-      for (i32 j = i; j <= m; ++j)
-        if (sum[n][j] - sum[n][i - 1] <= k) {
-          vec.eb(k - (sum[n][j] - sum[n][i - 1]));
-          ++cnt[k - (sum[n][j] - sum[n][i - 1])];
-        }
-    std::sort(all(vec)); vec.erase(std::unique(all(vec)), vec.end());
-    cnt2[0] = 1;
-    i64 ans = 0;
+    n = read();
+    for (i32 i = 1; i <= n; ++i) a[i] = read();
     for (i32 i = 1; i <= n; ++i) {
-      for (i32 j : vec) {
-        if (sum[i][m] >= j) ans += 1LL * cnt2[sum[i][m] - j] * cnt[j];
-        else break;
+      while (top > 0 && a[i] > a[st[top]]) {
+        d[i - st[top] + 1] = dec(d[i - st[top] + 1], a[st[top]] % P);
+        d[i - st[top - 1] + 1] = inc(d[i - st[top - 1] + 1], a[st[top]] % P);
+        --top;
       }
-      ++cnt2[sum[i][m]];
+      d[1] = inc(d[1], a[i] % P);
+      d[i - st[top] + 1] = dec(d[i - st[top] + 1], a[i] % P);
+      st[++top] = i;
     }
-    fprintf(fout, "%lld\n", ans);
+    while (top > 0) {
+      d[n - st[top] + 2] = dec(d[n - st[top] + 2], a[st[top]] % P);
+      d[n - st[top - 1] + 2] = inc(d[n - st[top - 1] + 2], a[st[top]] % P);
+      --top;
+    }
+    i32 s = 0, ans = 0;
+    for (i32 i = 1; i <= n; ++i) {
+      d[i] = inc(d[i], d[i - 1]);
+      s = inc(s, d[i]);
+      ans ^= s;
+    }
+    fprintf(fout, "%d\n", ans);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_treasure::main(), 0; }
+signed main() { return Solution_Of_grail::main(), 0; }

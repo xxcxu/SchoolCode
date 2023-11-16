@@ -22,46 +22,57 @@ constexpr bool chkmax(T1 &a, T2 b) { return a > b ? false : (a = b, true); }
 template<typename T1, typename T2>
 constexpr bool chkmin(T1 &a, T2 b) { return a > b ? (a = b, true) : false; } 
 #pragma endregion
-namespace Solution_Of_treasure {
+namespace Solution_Of_HLP1550 {
   bool _1;
-  static const i32 N = 100005, M = 105;
-  i32 n, m, k;
-  char arr[N][M];
-  i32 sum[N][M];
-  i32 cnt[N], cnt2[N];
-  std::vector<i32> vec;
+  static const i32 N = 1005;
+  i32 n, a[N];
+  i64 s, ans;
+  i32 prime[100005], cnt;
+  bool vis[100005];
+  std::vector<i32> factor;
   bool _2;
+  void init(i32 n) {
+    cnt = 0;
+    for (i32 i = 2; i <= n; ++i) {
+      if (!vis[i]) prime[++cnt] = i;
+      for (i32 j = 1; i * prime[j] <= n; ++j) {
+        vis[i * prime[j]] = true;
+        if (i % prime[j] == 0) break;
+      }
+    }
+    return void();
+  }
+  i64 solve(i32 p) {
+    i64 res = s;
+    for (i32 i = 1; i <= n; ++i)
+      if (a[i] % p != 0)
+        res -= a[i];
+    return res;
+  }
   void main() {
     fin = stdin, fout = stdout, ferr = stderr;
-    fin = fopen("treasure.in", "r");
-    fout = fopen("treasure.out", "w");
+    fin = fopen("divisor.in", "r");
+    fout = fopen("divisor.out", "w");
     fprintf(ferr, "This code use %.2lf MB memory\n", 1.0 * (&_1 - &_2) / 1024 / 1024);
     i64 Start_Time_Without_Read = clock();
-    n = read(), m = read(), k = read();
-    for (i32 i = 1; i <= n; ++i) fscanf(fin, "%s", arr[i] + 1);
-    for (i32 i = 1; i <= n; ++i)
-      for (i32 j = 1; j <= m; ++j)
-        sum[i][j] = sum[i - 1][j] + sum[i][j - 1] - sum[i - 1][j - 1] + (arr[i][j] == '$');
-    for (i32 i = 1; i <= m; ++i)
-      for (i32 j = i; j <= m; ++j)
-        if (sum[n][j] - sum[n][i - 1] <= k) {
-          vec.eb(k - (sum[n][j] - sum[n][i - 1]));
-          ++cnt[k - (sum[n][j] - sum[n][i - 1])];
-        }
-    std::sort(all(vec)); vec.erase(std::unique(all(vec)), vec.end());
-    cnt2[0] = 1;
-    i64 ans = 0;
+    init(100005);
+    n = read();
+    for (i32 i = 1; i <= n; ++i) a[i] = read(), s += a[i];
     for (i32 i = 1; i <= n; ++i) {
-      for (i32 j : vec) {
-        if (sum[i][m] >= j) ans += 1LL * cnt2[sum[i][m] - j] * cnt[j];
-        else break;
+      i32 p = a[i];
+      for (i32 j = 1; j <= cnt && prime[j] <= p; ++j) {
+        if (p % prime[j] == 0) factor.eb(prime[j]);
+        while (p % prime[j] == 0) p /= prime[j];
       }
-      ++cnt2[sum[i][m]];
+      if (p != 1) factor.eb(p);
     }
+    std::sort(all(factor));
+    factor.erase(std::unique(all(factor)), factor.end());
+    for (i32 i : factor) ans = std::max(ans, solve(i));
     fprintf(fout, "%lld\n", ans);
     i64 End_Time_Without_Read = clock();
     fprintf(ferr, "This code use %lld ms time\n", End_Time_Without_Read - Start_Time_Without_Read);
     return void();
   }
 }
-signed main() { return Solution_Of_treasure::main(), 0; }
+signed main() { return Solution_Of_HLP1550::main(), 0; }
