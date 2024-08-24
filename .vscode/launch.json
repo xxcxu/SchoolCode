@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/NixmSnipt/OneDrive/CodeSpace",
-      "program": "c:/Users/NixmSnipt/OneDrive/CodeSpace/build/Debug/outDebug",
+      "cwd": "E:/CodeSpace",
+      "program": "E:/CodeSpace/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

@@ -1,45 +1,50 @@
 {
-  "configurations": [
-    {
-      "name": "windows-gcc-x64",
-      "includePath": [
-        "${workspaceFolder}/**"
-      ],
-      "compilerPath": "C:/Users/NixmSnipt/Downloads/TDM-GCC-64/bin/gcc.exe",
-      "cStandard": "${default}",
-      "cppStandard": "${default}",
-      "intelliSenseMode": "windows-gcc-x64",
-      "compilerArgs": [
-        ""
-      ]
-    },
-    {
-      "name": "win10",
-      "includePath": [
-        "C:/Users/NixmSnipt/OneDrive/CodeSpace/**"
-      ],
-      "defines": [
-        "_DEBUG",
-        "UNICODE",
-        "_UNICODE"
-      ],
-      "compilerPath": "C:/Users/NixmSnipt/Downloads/TDM-GCC-64/bin/g++.exe",
-      "intelliSenseMode": "windows-gcc-x64",
-      "mergeConfigurations": false,
-      "browse": {
-        "path": [
-          "C:/Users/NixmSnipt/OneDrive/CodeSpace/**",
-          "${workspaceFolder}"
-        ],
-        "limitSymbolsToIncludedHeaders": true
-      },
-      "cppStandard": "c++20",
-      "cStandard": "c23",
-      "compilerArgs": [
-        "-I.",
-        "-std=c++20"
-      ]
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "windows-gcc-x64",
+            "includePath": [
+                "c:/Users/Administrator/OneDrive/CodeSpace/**"
+            ],
+            "compilerPath": "C:/TDM-GCC-64/bin/gcc.exe",
+            "intelliSenseMode": "windows-gcc-x64",
+            "compilerArgs": [
+                ""
+            ],
+            "compilerPathInCppPropertiesJson": "C:/TDM-GCC-64/bin/gcc.exe",
+            "mergeConfigurations": false,
+            "browse": {
+                "path": [
+                    "c:/Users/Administrator/OneDrive/CodeSpace/**",
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "cppStandard": "c++17"
+        },
+        {
+            "name": "win10",
+            "includePath": [],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "E:/mingw64/bin/g++.exe",
+            "intelliSenseMode": "windows-gcc-x64",
+            "mergeConfigurations": false,
+            "browse": {
+                "path": [
+                    "E:/mingw64/bin",
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "cppStandard": "c++17",
+            "cStandard": "c23",
+            "compilerArgs": [
+                "-std=c++17"
+            ]
+        }
+    ],
+    "version": 4
 }
